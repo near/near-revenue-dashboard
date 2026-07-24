@@ -115,7 +115,7 @@ export function RevenueCharts({
             </div>
             <p className="text-xs text-near-muted">
               {view === "absolute" && lastAbs
-                ? `Cumulative YTD issuance as share of ~${formatSupplyNear(lastAbs.referenceSupplyNear)} circulating supply.`
+                ? `Cumulative issuance as share of ~${formatSupplyNear(lastAbs.referenceSupplyNear)} circulating supply.`
                 : "Comparison of protocol revenue relative to token issuance."}
             </p>
           </div>
@@ -142,7 +142,7 @@ export function RevenueCharts({
           {view === "pct" ? (
             <div className="flex items-center gap-2 text-xs text-near-muted">
               <span className="inline-block w-4 h-px bg-near-green" />
-              Revenue as % of $NEAR emissions
+              Revenue as % of NEAR emissions
             </div>
           ) : (
             <>
