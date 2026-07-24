@@ -5,7 +5,7 @@ import { useGlobalRange } from "@/providers/global-range-provider"
 import { Card } from "@/components/ui/card"
 import { RevenueBarChart } from "@/components/charts/bar-chart"
 import { EmissionsLineChart, AbsoluteEmissionsChart } from "@/components/charts/line-chart"
-import { debugGlow } from "@/lib/utils"
+import { debugGlow, formatSupplyNear } from "@/lib/utils"
 import type { AbsoluteRevEmissionsPoint } from "@/lib/utils"
 import type { TimeSeriesPoint, RevenueBarPoint } from "@/lib/types"
 
@@ -54,6 +54,7 @@ export function RevenueCharts({
     const cutoffIso = cutoff.toISOString().slice(0, 10)
     return absoluteRevEmissions.filter(d => d.date >= cutoffIso)
   }, [absoluteRevEmissions, range])
+  const lastAbs = visibleAbs[visibleAbs.length - 1]
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -113,7 +114,9 @@ export function RevenueCharts({
               )}
             </div>
             <p className="text-xs text-near-muted">
-              Comparison of protocol revenue relative to token issuance.
+              {view === "absolute" && lastAbs
+                ? `Cumulative YTD issuance as share of ~${formatSupplyNear(lastAbs.referenceSupplyNear)} circulating supply.`
+                : "Comparison of protocol revenue relative to token issuance."}
             </p>
           </div>
           {/* Toggle */}
@@ -144,12 +147,16 @@ export function RevenueCharts({
           ) : (
             <>
               <div className="flex items-center gap-1.5 text-xs text-near-muted">
-                <span className="w-3 h-0.5 shrink-0 bg-near-green" />
-                Cumulative Revenue
+                <span className="w-3 h-0.5 shrink-0" style={{ background: "#c2721f" }} />
+                Gross emissions{lastAbs ? ` · +${lastAbs.grossPct.toFixed(1)}%` : ""}
               </div>
               <div className="flex items-center gap-1.5 text-xs text-near-muted">
-                <span className="w-3 h-3 rounded-sm shrink-0" style={{ background: "#c2721f", opacity: 0.7 }} />
-                Cumulative Emissions
+                <span className="w-3 shrink-0" style={{ borderTop: "1.5px dashed #c2721f" }} />
+                Net of revenue{lastAbs ? ` · +${lastAbs.netPct.toFixed(1)}%` : ""}
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-near-muted">
+                <span className="w-3 h-3 rounded-sm shrink-0" style={{ background: "var(--near-green)", opacity: 0.5 }} />
+                Revenue offset
               </div>
             </>
           )}

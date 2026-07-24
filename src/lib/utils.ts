@@ -24,6 +24,12 @@ export function formatNear(value: number): string {
   return value.toFixed(0)
 }
 
+/** Format a large NEAR supply figure with a B suffix when applicable (e.g. "1.32B", "890.4M"). */
+export function formatSupplyNear(value: number): string {
+  if (value >= 1_000_000_000) return `${(value / 1_000_000_000).toFixed(2)}B`
+  return formatNear(value)
+}
+
 /** Format a USD amount as an AnimatedNumber-compatible string (e.g. "$34.59M", "$3.76M"). */
 export function formatUSD(value: number): string {
   if (value >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(2)}B`
@@ -149,11 +155,27 @@ export interface AbsoluteRevEmissionsPoint {
   date: string        // "YYYY-MM"
   revenueNear: number // cumulative_revenue_near
   emissionsNear: number // cumulative_emissions_near (last day of month)
+  referenceSupplyNear: number // constant across the series — latest known total_supply_near
+  grossPct: number    // emissionsNear / referenceSupplyNear * 100
+  netPct: number      // max(0, emissionsNear - revenueNear) / referenceSupplyNear * 100
+  offsetPct: number   // grossPct - netPct (== revenueNear / referenceSupplyNear * 100)
+}
+
+/** Scan from the most recent date backward for the first valid (>0) total_supply_near. */
+function findLatestValidSupply(points: EmissionsSeriesPoint[]): number {
+  const sorted = [...points].sort((a, b) => b.date_at.localeCompare(a.date_at))
+  for (const p of sorted) {
+    if (p.total_supply_near > 0) return p.total_supply_near
+  }
+  return 0
 }
 
 /**
  * Build daily points for the "Absolute" Revenue vs Emissions chart.
- * Both series start at 0 on Jan 1 of the current year (YTD window).
+ * Both series start at 0 on Jan 1 of the current year (YTD window), expressed
+ * as a share of a single reference circulating supply (the latest known
+ * total_supply_near) rather than raw NEAR — raw cumulative NEAR reads as a
+ * near-doubling of supply to anyone unfamiliar with how large total supply is.
  * Emissions: running sum of daily emissions_near from Jan 1.
  * Revenue:   running sum of monthly revenue_near — steps up once per month.
  */
@@ -162,6 +184,9 @@ export function computeAbsoluteRevVsEmissions(
   emissionsDaily: EmissionsSeriesPoint[],
   priceByMonth: Record<string, number>
 ): AbsoluteRevEmissionsPoint[] {
+  const referenceSupplyNear = findLatestValidSupply(emissionsDaily)
+  if (referenceSupplyNear <= 0) return []
+
   const ytdStart = `${new Date().getFullYear()}-01-01`
   const ytdMonthStart = ytdStart.slice(0, 7)
 
@@ -190,6 +215,20 @@ export function computeAbsoluteRevVsEmissions(
     cumEmissions += p.emissions_near
     const mk = p.date_at.slice(0, 7)
     if (monthRevCumulative[mk] !== undefined) currentRev = monthRevCumulative[mk]
-    return { date: p.date_at, emissionsNear: cumEmissions, revenueNear: currentRev }
+
+    const grossPct = (cumEmissions / referenceSupplyNear) * 100
+    const netEmissions = Math.max(0, cumEmissions - currentRev)
+    const netPct = (netEmissions / referenceSupplyNear) * 100
+    const offsetPct = Math.max(0, grossPct - netPct)
+
+    return {
+      date: p.date_at,
+      emissionsNear: cumEmissions,
+      revenueNear: currentRev,
+      referenceSupplyNear,
+      grossPct,
+      netPct,
+      offsetPct,
+    }
   })
 }

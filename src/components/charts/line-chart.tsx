@@ -83,46 +83,41 @@ function buildLineTicks(data: TimeSeriesPoint[]): number[] {
 
 // ── Absolute Revenue vs Emissions chart ───────────────────────────────────────
 
-function fmtNearAxis(v: number): string {
-  if (v >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M`
-  if (v >= 1_000) return `${(v / 1_000).toFixed(0)}K`
-  return String(v)
+function buildPctTicks(max: number, count = 4): number[] {
+  if (max <= 0) return [0]
+  const step = max / count
+  return Array.from({ length: count + 1 }, (_, i) => parseFloat((step * i).toFixed(2)))
 }
 
-function AbsoluteTooltip({ active, payload, label }: TooltipProps<number, string>) {
+function AbsolutePctTooltip({ active, payload, label }: TooltipProps<number, string>) {
   if (!active || !payload?.length) return null
+  const d = payload[0].payload as AbsoluteRevEmissionsPoint
   return (
     <div className="bg-near-card border border-near-border rounded-lg px-3 py-2 text-sm shadow-lg">
       <p className="text-near-subtle text-xs mb-1.5">{label}</p>
-      {payload.map((entry, i) => (
-        <div key={i} className="flex items-center gap-2 mb-0.5">
-          <span className="w-2 h-2 rounded-sm shrink-0" style={{ background: entry.color as string }} />
-          <span className="text-near-subtle text-xs">{entry.name}</span>
-          <span className="ml-auto text-white font-medium text-xs pl-3">
-            {fmtNearAxis(entry.value as number)} NEAR
-          </span>
-        </div>
-      ))}
+      <div className="flex items-center gap-2 mb-0.5">
+        <span className="w-2 h-2 rounded-sm shrink-0" style={{ background: "#c2721f" }} />
+        <span className="text-near-subtle text-xs">Gross emissions</span>
+        <span className="ml-auto text-white font-medium text-xs pl-3">+{d.grossPct.toFixed(2)}%</span>
+      </div>
+      <div className="flex items-center gap-2 mb-0.5">
+        <span className="w-2 h-2 rounded-sm shrink-0" style={{ background: "#c2721f", opacity: 0.6 }} />
+        <span className="text-near-subtle text-xs">Net of revenue</span>
+        <span className="ml-auto text-white font-medium text-xs pl-3">+{d.netPct.toFixed(2)}%</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="w-2 h-2 rounded-sm shrink-0" style={{ background: "var(--near-green)" }} />
+        <span className="text-near-subtle text-xs">Revenue offset</span>
+        <span className="ml-auto text-white font-medium text-xs pl-3">{d.offsetPct.toFixed(2)}%</span>
+      </div>
     </div>
   )
 }
 
-function buildAbsTicks(max: number, count = 4): number[] {
-  if (max <= 0) return [0]
-  const step = max / count
-  return Array.from({ length: count + 1 }, (_, i) => Math.round(step * i))
-}
-
-function fmtAbsDayLabel(s: string): string {
-  const d = new Date(s + "T12:00:00Z")
-  if (isNaN(d.getTime())) return s
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
-}
-
 export function AbsoluteEmissionsChart({ data }: { data: AbsoluteRevEmissionsPoint[] }) {
   if (data.length === 0) return null
-  const maxEmissions = Math.max(0, ...data.map(d => d.emissionsNear))
-  const yTicks = buildAbsTicks(maxEmissions * 1.1)
+  const maxGross = Math.max(0, ...data.map(d => d.grossPct))
+  const yTicks = buildPctTicks(maxGross * 1.1)
   const yMax   = yTicks[yTicks.length - 1]
   // One tick per month (first occurrence of each month)
   const seenMonths = new Set<string>()
@@ -137,13 +132,9 @@ export function AbsoluteEmissionsChart({ data }: { data: AbsoluteRevEmissionsPoi
     <ResponsiveContainer width="100%" height={240}>
       <ComposedChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
         <defs>
-          <linearGradient id="emissionsAbsGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#c2721f" stopOpacity={0.45} />
-            <stop offset="100%" stopColor="#c2721f" stopOpacity={0.05} />
-          </linearGradient>
-          <linearGradient id="revenueAbsGrad" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="offsetPctGrad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="var(--near-green)" stopOpacity={0.35} />
-            <stop offset="100%" stopColor="var(--near-green)" stopOpacity={0.03} />
+            <stop offset="100%" stopColor="var(--near-green)" stopOpacity={0.05} />
           </linearGradient>
         </defs>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--near-border)" vertical={false} />
@@ -157,19 +148,38 @@ export function AbsoluteEmissionsChart({ data }: { data: AbsoluteRevEmissionsPoi
         />
         <YAxis
           ticks={yTicks}
-          tickFormatter={fmtNearAxis}
+          tickFormatter={(v: number) => `${v.toFixed(1)}%`}
           tick={{ fill: "var(--near-subtle)", fontSize: 11 }}
           axisLine={false}
           tickLine={false}
           width={52}
           domain={[0, yMax]}
         />
-        <Tooltip content={<AbsoluteTooltip />} cursor={{ stroke: "var(--near-border)" }} />
+        <Tooltip content={<AbsolutePctTooltip />} cursor={{ stroke: "var(--near-border)" }} />
+        {/* Invisible base at netPct, then the visible band from netPct up to grossPct */}
         <Area
           type="monotone"
-          dataKey="emissionsNear"
-          name="Cumulative Emissions"
-          fill="url(#emissionsAbsGrad)"
+          dataKey="netPct"
+          stackId="band"
+          stroke="none"
+          fill="transparent"
+          isAnimationActive
+          animationDuration={800}
+        />
+        <Area
+          type="monotone"
+          dataKey="offsetPct"
+          stackId="band"
+          name="Revenue offset"
+          fill="url(#offsetPctGrad)"
+          stroke="none"
+          isAnimationActive
+          animationDuration={800}
+        />
+        <Line
+          type="monotone"
+          dataKey="grossPct"
+          name="Gross emissions"
           stroke="#c2721f"
           strokeWidth={1.5}
           dot={false}
@@ -177,15 +187,15 @@ export function AbsoluteEmissionsChart({ data }: { data: AbsoluteRevEmissionsPoi
           isAnimationActive
           animationDuration={800}
         />
-        <Area
+        <Line
           type="monotone"
-          dataKey="revenueNear"
-          name="Cumulative Revenue"
-          fill="url(#revenueAbsGrad)"
-          stroke="var(--near-green)"
-          strokeWidth={2}
+          dataKey="netPct"
+          name="Net of revenue"
+          stroke="#c2721f"
+          strokeWidth={1.5}
+          strokeDasharray="4 3"
           dot={false}
-          activeDot={{ r: 3, fill: "var(--near-green)", stroke: "var(--near-card)", strokeWidth: 2 }}
+          activeDot={{ r: 3, fill: "#c2721f", stroke: "var(--near-card)", strokeWidth: 2 }}
           isAnimationActive
           animationDuration={800}
         />
