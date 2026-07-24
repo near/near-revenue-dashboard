@@ -96,17 +96,17 @@ function AbsolutePctTooltip({ active, payload, label }: TooltipProps<number, str
     <div className="bg-near-card border border-near-border rounded-lg px-3 py-2 text-sm shadow-lg">
       <p className="text-near-subtle text-xs mb-1.5">{label}</p>
       <div className="flex items-center gap-2 mb-0.5">
-        <span className="w-2 h-2 rounded-sm shrink-0" style={{ background: "#c2721f" }} />
+        <span className="w-2 h-2 rounded-sm shrink-0" style={{ background: "var(--near-green)" }} />
         <span className="text-near-subtle text-xs">Gross emissions</span>
         <span className="ml-auto text-white font-medium text-xs pl-3">+{d.grossPct.toFixed(2)}%</span>
       </div>
       <div className="flex items-center gap-2 mb-0.5">
-        <span className="w-2 h-2 rounded-sm shrink-0" style={{ background: "#c2721f", opacity: 0.6 }} />
+        <span className="w-2 h-2 rounded-sm shrink-0" style={{ background: "var(--near-green-dim)" }} />
         <span className="text-near-subtle text-xs">Net of revenue</span>
         <span className="ml-auto text-white font-medium text-xs pl-3">+{d.netPct.toFixed(2)}%</span>
       </div>
       <div className="flex items-center gap-2">
-        <span className="w-2 h-2 rounded-sm shrink-0" style={{ background: "var(--near-green)" }} />
+        <span className="w-2 h-2 rounded-sm shrink-0" style={{ background: "var(--near-green)", opacity: 0.35 }} />
         <span className="text-near-subtle text-xs">Revenue offset</span>
         <span className="ml-auto text-white font-medium text-xs pl-3">{d.offsetPct.toFixed(2)}%</span>
       </div>
@@ -180,10 +180,10 @@ export function AbsoluteEmissionsChart({ data }: { data: AbsoluteRevEmissionsPoi
           type="monotone"
           dataKey="grossPct"
           name="Gross emissions"
-          stroke="#c2721f"
+          stroke="var(--near-green)"
           strokeWidth={1.5}
           dot={false}
-          activeDot={{ r: 3, fill: "#c2721f", stroke: "var(--near-card)", strokeWidth: 2 }}
+          activeDot={{ r: 3, fill: "var(--near-green)", stroke: "var(--near-card)", strokeWidth: 2 }}
           isAnimationActive
           animationDuration={800}
         />
@@ -191,11 +191,11 @@ export function AbsoluteEmissionsChart({ data }: { data: AbsoluteRevEmissionsPoi
           type="monotone"
           dataKey="netPct"
           name="Net of revenue"
-          stroke="#c2721f"
+          stroke="var(--near-green-dim)"
           strokeWidth={1.5}
           strokeDasharray="4 3"
           dot={false}
-          activeDot={{ r: 3, fill: "#c2721f", stroke: "var(--near-card)", strokeWidth: 2 }}
+          activeDot={{ r: 3, fill: "var(--near-green-dim)", stroke: "var(--near-card)", strokeWidth: 2 }}
           isAnimationActive
           animationDuration={800}
         />

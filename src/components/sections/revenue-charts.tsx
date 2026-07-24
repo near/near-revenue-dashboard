@@ -147,11 +147,11 @@ export function RevenueCharts({
           ) : (
             <>
               <div className="flex items-center gap-1.5 text-xs text-near-muted">
-                <span className="w-3 h-0.5 shrink-0" style={{ background: "#c2721f" }} />
+                <span className="w-3 h-0.5 shrink-0" style={{ background: "var(--near-green)" }} />
                 Gross emissions{lastAbs ? ` · +${lastAbs.grossPct.toFixed(1)}%` : ""}
               </div>
               <div className="flex items-center gap-1.5 text-xs text-near-muted">
-                <span className="w-3 shrink-0" style={{ borderTop: "1.5px dashed #c2721f" }} />
+                <span className="w-3 shrink-0" style={{ borderTop: "1.5px dashed var(--near-green-dim)" }} />
                 Net of revenue{lastAbs ? ` · +${lastAbs.netPct.toFixed(1)}%` : ""}
               </div>
               <div className="flex items-center gap-1.5 text-xs text-near-muted">
