@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import localFont from "next/font/local"
 import { Inter } from "next/font/google"
-import Script from "next/script"
 import { LenisProvider } from "@/providers/lenis-provider"
 import { GlobalRangeProvider } from "@/providers/global-range-provider"
 import "./globals.css"
@@ -70,11 +69,6 @@ export default function RootLayout({
         <LenisProvider>
           <GlobalRangeProvider>{children}</GlobalRangeProvider>
         </LenisProvider>
-        <Script
-          src="https://internal.near.org/review.js"
-          data-key="arev_e7cdd2140cad2293d4436d362df5e79a"
-          strategy="afterInteractive"
-        />
       </body>
     </html>
   )
