@@ -188,6 +188,5 @@ export const ECOSYSTEM_CHAINS: EcosystemChain[] = [
 ]
 
 export const GAUGE_VALUE = 30.9
-export const FEES_LAST_30D = "352.6K"
 export const TOTAL_FEES_DISPLAY = "$34.84M"
 export const FEES_CHANGE = "121.1"
