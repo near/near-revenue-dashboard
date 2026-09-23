@@ -133,7 +133,7 @@ The dashboard is **API-first with a static fallback**, not purely static:
 
 1. `src/app/page.tsx` and `src/app/analytics/page.tsx` are `force-dynamic` Server Components that call `fetchDashboardData()` / `fetchAnalyticsData()` from **`src/lib/api.ts`** — a typed `fetch()` client hitting a live revenue API.
 2. Each individual endpoint call is fault-tolerant on its own (a failed field falls back to an empty/neutral value without breaking the rest of the page).
-3. If the whole composite fetch throws, the page's `try/catch` falls back to the static mock constants in **`src/lib/data.ts`**, typed by `src/lib/types.ts` — `STATS`, `REVENUE_MONTHLY`, `WALLET_ROWS`, `FAQ_ITEMS`, `GAUGE_VALUE`, `FEES_LAST_30D`, `TOTAL_FEES_DISPLAY`, `FEES_CHANGE`, and more.
+3. If the whole composite fetch throws, the page's `try/catch` falls back to the static mock constants in **`src/lib/data.ts`**, typed by `src/lib/types.ts` — `STATS`, `REVENUE_MONTHLY`, `WALLET_ROWS`, `FAQ_ITEMS`, `GAUGE_VALUE`, `TOTAL_FEES_DISPLAY`, `FEES_CHANGE`, and more.
 
 The app never crashes or shows a blank screen: without a working `NEAR_API_KEY` it simply renders the static mock dataset. See **[ARCHITECTURE.md](ARCHITECTURE.md)** for the full data-flow diagram and a reference table of every API endpoint.
 
