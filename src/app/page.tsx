@@ -15,12 +15,13 @@ import { EcosystemMap } from "@/components/sections/ecosystem-map"
 import { Faq } from "@/components/sections/faq"
 import { fetchDashboardData, type RevenueStreamItem, type SnapshotCaptureSplit, type RevenueSeriesPoint, type IntentVolumePoint, type TotalFeesSeriesPoint } from "@/lib/api"
 import { formatUSD, formatNear, formatMonthLabel, formatDayLabel, formatUpdatedAt, aggregateEmissionsByMonth, buildPriceByMonth, computeRevenueVsEmissions, computeAbsoluteRevVsEmissions, computeTrailingChange, debugGlow, type AbsoluteRevEmissionsPoint } from "@/lib/utils"
-import { STATS, REVENUE_MONTHLY, GAUGE_VALUE, TOTAL_FEES_DISPLAY, FEES_CHANGE, SPARKLINE_DATA, EMISSIONS_SERIES, WALLET_ROWS } from "@/lib/data"
+import { STATS, REVENUE_MONTHLY, GAUGE_VALUE, TOTAL_FEES_DISPLAY, TOTAL_NET_REVENUE_DISPLAY, FEES_CHANGE, SPARKLINE_DATA, EMISSIONS_SERIES, WALLET_ROWS } from "@/lib/data"
 import type { StatCard, TimeSeriesPoint, RevenueBarPoint, WalletRow } from "@/lib/types"
 
 export default async function Page() {
   // ── Fallback values (static data) ─────────────────────────────────────────
   let totalFeesDisplay = TOTAL_FEES_DISPLAY
+  let totalNetRevenueDisplay = TOTAL_NET_REVENUE_DISPLAY
   let feesLast30dUsd = "$2.83M"
   let netFeesLast30dUsd = "$874.5K"
   let gaugeValue = GAUGE_VALUE
@@ -54,6 +55,7 @@ export default async function Page() {
     const priceByMonth = buildPriceByMonth(priceSeries)
 
     totalFeesDisplay = formatUSD(snap.total_fees.fees_usd_all_time)
+    totalNetRevenueDisplay = formatUSD(snap.revenue.revenue_usd_all_time)
     feesLast30dUsd = formatUSD(snap.total_fees.fees_usd_d30)
     netFeesLast30dUsd = formatUSD(snap.revenue.revenue_usd_d30)
     gaugeValue = parseFloat((snap.capture_rate.capture_rate_d30 * 100).toFixed(1))
@@ -157,7 +159,6 @@ export default async function Page() {
           volumeUsd: volumeByDate.get(p.date_at) ?? 0,
         }
       })
-    // Wallet breakdown — sum burn_revenue_near from the fees series as "Protocol Fees (70% Burned)"
     if (walletBreakdown.length > 0) {
       const walletTotal = walletBreakdown.reduce((sum, w) => sum + w.inflow_near_all_time, 0)
       if (walletTotal > 0) {
@@ -176,6 +177,7 @@ export default async function Page() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
         <Hero
           totalFeesDisplay={totalFeesDisplay}
+          totalNetRevenueDisplay={totalNetRevenueDisplay}
           feesLast30dUsd={feesLast30dUsd}
           netFeesLast30dUsd={netFeesLast30dUsd}
           gaugeValue={gaugeValue}

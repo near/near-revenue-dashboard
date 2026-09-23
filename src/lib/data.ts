@@ -55,7 +55,6 @@ export const WALLET_ROWS: WalletRow[] = [
   { name: "fefundsadmin.sputnik-dao.near",  nearAmount: 1405868, share: 56, pct: 55.9 },
   { name: "1csfundsadmin.sputnik-dao.near", nearAmount: 555082,  share: 22, pct: 22.1 },
   { name: "buybacks.multisignature.near",   nearAmount: 338830,  share: 13, pct: 13.5 },
-  { name: "Protocol Fees (70% Burned)",     nearAmount: 212724,  share:  8, pct:  8.5 },
 ]
 
 export const STATS: StatCard[] = [
@@ -189,4 +188,5 @@ export const ECOSYSTEM_CHAINS: EcosystemChain[] = [
 
 export const GAUGE_VALUE = 30.9
 export const TOTAL_FEES_DISPLAY = "$34.84M"
+export const TOTAL_NET_REVENUE_DISPLAY = "$10.77M"
 export const FEES_CHANGE = "121.1"

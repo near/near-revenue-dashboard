@@ -7,6 +7,7 @@ import { AnimatedNumber } from "@/components/ui/animated-number"
 
 interface HeroProps {
   totalFeesDisplay: string
+  totalNetRevenueDisplay: string
   feesLast30dUsd: string
   netFeesLast30dUsd: string
   gaugeValue: number
@@ -17,6 +18,7 @@ interface HeroProps {
 
 export function Hero({
   totalFeesDisplay,
+  totalNetRevenueDisplay,
   feesLast30dUsd,
   netFeesLast30dUsd,
   gaugeValue,
@@ -35,10 +37,6 @@ export function Hero({
       <div className="absolute -inset-px pointer-events-none" style={{ background: "linear-gradient(225deg, rgba(11,13,13,0.2), rgba(11,13,13,1))" }} />
       {/* Left: headline + big number */}
       <div className="relative z-10 lg:col-span-3 flex flex-col justify-center gap-5">
-        <div className="flex items-center gap-2">
-          <span className="text-near-muted text-xs font-medium tracking-widest uppercase">+ Total fees generated</span>
-        </div>
-
         <div>
           <p className="text-near-muted text-base leading-snug mb-3">
             NEAR is earning{" "}
@@ -46,7 +44,7 @@ export function Hero({
           </p>
           <div className="flex items-baseline gap-4 flex-wrap">
             <AnimatedNumber
-              value={totalFeesDisplay}
+              value={totalNetRevenueDisplay}
               duration={2}
               className="text-near-text font-light leading-none"
               style={{ fontSize: "clamp(3rem, 7vw, 5.5rem)" }}
@@ -61,8 +59,13 @@ export function Hero({
         </div>
 
         <p className="text-near-muted text-sm leading-relaxed max-w-lg text-pretty">
-          NEAR captures a growing share of fees as gross revenue, feeding buybacks that permanently remove NEAR from circulation.
+          NEAR captures a growing share of fees, feeding buybacks that permanently remove NEAR from circulation.
         </p>
+
+        <div className="flex items-center gap-2">
+          <span className="text-near-muted text-xs font-medium tracking-widest uppercase">Total fees generated</span>
+          <span className="text-near-text text-xs font-semibold">{totalFeesDisplay}</span>
+        </div>
 
         <div className="hidden">
           <Badge variant={isUp ? "green" : "red"}>
@@ -79,19 +82,19 @@ export function Hero({
           <Gauge value={gaugeValue} />
 
           <p className="text-xs text-near-muted text-center leading-relaxed">
-            Share of total fees captured as protocol revenue.
+            Share of total fees captured as net revenue.
           </p>
 
           <Separator />
 
           <div>
-            <p className="text-xs text-near-subtle mb-3">Fees · last 30 days</p>
+            <p className="text-xs text-near-subtle mb-3">Last 30 days</p>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-[10px] text-near-subtle uppercase tracking-wider mb-1">Gross</p>
+                <p className="text-[10px] text-near-subtle uppercase tracking-wider mb-1">Net revenue</p>
                 <div className="flex items-baseline gap-1.5">
                   <AnimatedNumber
-                    value={feesLast30dUsd}
+                    value={netFeesLast30dUsd}
                     duration={1.5}
                     delay={0.3}
                     className="text-xl font-bold text-near-text"
@@ -100,10 +103,10 @@ export function Hero({
                 </div>
               </div>
               <div>
-                <p className="text-[10px] text-near-subtle uppercase tracking-wider mb-1">Net</p>
+                <p className="text-[10px] text-near-subtle uppercase tracking-wider mb-1">Fees generated</p>
                 <div className="flex items-baseline gap-1.5">
                   <AnimatedNumber
-                    value={netFeesLast30dUsd}
+                    value={feesLast30dUsd}
                     duration={1.5}
                     delay={0.4}
                     className="text-xl font-bold text-near-text"

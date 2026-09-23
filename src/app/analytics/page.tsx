@@ -135,35 +135,37 @@ export default async function AnalyticsPage() {
         {/* ── Intent Volume ─────────────────────────────────────────────────── */}
         <IntentVolumeSection data={intentVolumeSeries} />
 
-        {/* ── Revenue by Stream ─────────────────────────────────────────────── */}
-        <Card
-          padding="none"
-          className="overflow-hidden" style={debugGlow("api")}
-        >
-          <div className="p-6 pb-4">
-            <div className="flex items-center gap-3 mb-2 flex-wrap">
-              <h2 className="text-base font-semibold text-near-text">Revenue by Stream</h2>
-              <SourceBadge label="Onchain" />
-            </div>
-            <p className="text-xs text-near-muted max-w-2xl leading-relaxed">
-              Protocol net revenue broken down by originating source. <strong className="text-near-subtle font-medium">Front-end</strong> captures fees
-              charged through the NEAR Intents UI. <strong className="text-near-subtle font-medium">Quote Improvement</strong> is the spread
-              retained when execution beats the quoted price. <strong className="text-near-subtle font-medium">Authorized</strong> and{" "}
-              <strong className="text-near-subtle font-medium">unauthorized partner</strong> volumes come from external integrations routing
-              through NEAR Intents. <strong className="text-near-subtle font-medium">Private agreements</strong> are bespoke deals with
-              select partners. Figures denominated in USD.
-            </p>
-          </div>
-          <div className="px-6 pb-6">
-            {revenueStreams.length > 0 ? (
-              <RevenueStreams streams={revenueStreams} />
-            ) : (
-              <p className="text-sm text-near-subtle py-8 text-center">
-                Revenue stream data unavailable
+        {/* ── Revenue by Stream (hidden for now — remove the `false &&` to restore) ── */}
+        {false && (
+          <Card
+            padding="none"
+            className="overflow-hidden" style={debugGlow("api")}
+          >
+            <div className="p-6 pb-4">
+              <div className="flex items-center gap-3 mb-2 flex-wrap">
+                <h2 className="text-base font-semibold text-near-text">Revenue by Stream</h2>
+                <SourceBadge label="Onchain" />
+              </div>
+              <p className="text-xs text-near-muted max-w-2xl leading-relaxed">
+                Protocol net revenue broken down by originating source. <strong className="text-near-subtle font-medium">Front-end</strong> captures fees
+                charged through the NEAR Intents UI. <strong className="text-near-subtle font-medium">Quote Improvement</strong> is the spread
+                retained when execution beats the quoted price. <strong className="text-near-subtle font-medium">Authorized</strong> and{" "}
+                <strong className="text-near-subtle font-medium">unauthorized partner</strong> volumes come from external integrations routing
+                through NEAR Intents. <strong className="text-near-subtle font-medium">Private agreements</strong> are bespoke deals with
+                select partners. Figures denominated in USD.
               </p>
-            )}
-          </div>
-        </Card>
+            </div>
+            <div className="px-6 pb-6">
+              {revenueStreams.length > 0 ? (
+                <RevenueStreams streams={revenueStreams} />
+              ) : (
+                <p className="text-sm text-near-subtle py-8 text-center">
+                  Revenue stream data unavailable
+                </p>
+              )}
+            </div>
+          </Card>
+        )}
 
         {/* ── Fee Capture Mechanics ─────────────────────────────────────────── */}
         {captureSplit && (
