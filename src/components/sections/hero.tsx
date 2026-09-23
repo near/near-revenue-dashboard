@@ -8,9 +8,7 @@ import { AnimatedNumber } from "@/components/ui/animated-number"
 interface HeroProps {
   totalFeesDisplay: string
   totalNetRevenueDisplay: string
-  feesLast30d: string
   feesLast30dUsd: string
-  netFeesLast30d: string
   netFeesLast30dUsd: string
   gaugeValue: number
   /** Signed percentage change in revenue (last 30 days). Positive = up. */
@@ -21,9 +19,7 @@ interface HeroProps {
 export function Hero({
   totalFeesDisplay,
   totalNetRevenueDisplay,
-  feesLast30d,
   feesLast30dUsd,
-  netFeesLast30d,
   netFeesLast30dUsd,
   gaugeValue,
   feesChange,
@@ -98,31 +94,25 @@ export function Hero({
                 <p className="text-[10px] text-near-subtle uppercase tracking-wider mb-1">Net revenue</p>
                 <div className="flex items-baseline gap-1.5">
                   <AnimatedNumber
-                    value={netFeesLast30d}
+                    value={netFeesLast30dUsd}
                     duration={1.5}
                     delay={0.3}
                     className="text-xl font-bold text-near-text"
                   />
-                  <span className="text-xs text-near-muted font-medium">NEAR</span>
+                  <span className="text-xs text-near-muted font-medium">USD</span>
                 </div>
-                {netFeesLast30dUsd && (
-                  <p className="text-xs text-near-green/70 mt-0.5">≈ {netFeesLast30dUsd} USD</p>
-                )}
               </div>
               <div>
                 <p className="text-[10px] text-near-subtle uppercase tracking-wider mb-1">Fees generated</p>
                 <div className="flex items-baseline gap-1.5">
                   <AnimatedNumber
-                    value={feesLast30d}
+                    value={feesLast30dUsd}
                     duration={1.5}
                     delay={0.4}
                     className="text-xl font-bold text-near-text"
                   />
-                  <span className="text-xs text-near-muted font-medium">NEAR</span>
+                  <span className="text-xs text-near-muted font-medium">USD</span>
                 </div>
-                {feesLast30dUsd && (
-                  <p className="text-xs text-near-green/70 mt-0.5">≈ {feesLast30dUsd} USD</p>
-                )}
               </div>
             </div>
             <div className="mt-4">

@@ -207,10 +207,12 @@ and **Inter** (`next/font/google`) — not Geist.
 
 ## 10. Known caveats
 
-- **NEAR↔USD conversion**: the API's own `fees_near_d30` field has a broken
-  price conversion upstream. `page.tsx` works around this by converting
-  `fees_usd_d30` to NEAR using the daily price feed (`fetchPriceSeries()`)
-  instead of trusting the API's NEAR-denominated field directly.
+- **NEAR-denominated fee fields are unused.** The hero's Gross/Net 30d figures
+  are USD-only (`fees_usd_d30` / `revenue_usd_d30`); the API's `fees_near_d30`
+  has a broken price conversion upstream, and the price-feed workaround that
+  used to correct it was removed along with the NEAR display. Reintroducing a
+  NEAR figure anywhere means solving that conversion again — do not trust
+  `*_near_*` snapshot fields as-is.
 - **`/v1/series/revenue-vs-emissions` is intentionally unused.** The dashboard
   computes the revenue-vs-emissions ratio manually
   (`aggregateEmissionsByMonth` + `computeRevenueVsEmissions` in
