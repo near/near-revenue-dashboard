@@ -7,6 +7,7 @@ import { AnimatedNumber } from "@/components/ui/animated-number"
 
 interface HeroProps {
   totalFeesDisplay: string
+  totalNetRevenueDisplay: string
   feesLast30d: string
   feesLast30dUsd: string
   netFeesLast30d: string
@@ -19,6 +20,7 @@ interface HeroProps {
 
 export function Hero({
   totalFeesDisplay,
+  totalNetRevenueDisplay,
   feesLast30d,
   feesLast30dUsd,
   netFeesLast30d,
@@ -39,10 +41,6 @@ export function Hero({
       <div className="absolute -inset-px pointer-events-none" style={{ background: "linear-gradient(225deg, rgba(11,13,13,0.2), rgba(11,13,13,1))" }} />
       {/* Left: headline + big number */}
       <div className="relative z-10 lg:col-span-3 flex flex-col justify-center gap-5">
-        <div className="flex items-center gap-2">
-          <span className="text-near-muted text-xs font-medium tracking-widest uppercase">+ Total fees generated</span>
-        </div>
-
         <div>
           <p className="text-near-muted text-base leading-snug mb-3">
             NEAR is earning{" "}
@@ -50,7 +48,7 @@ export function Hero({
           </p>
           <div className="flex items-baseline gap-4 flex-wrap">
             <AnimatedNumber
-              value={totalFeesDisplay}
+              value={totalNetRevenueDisplay}
               duration={2}
               className="text-near-text font-light leading-none"
               style={{ fontSize: "clamp(3rem, 7vw, 5.5rem)" }}
@@ -65,8 +63,13 @@ export function Hero({
         </div>
 
         <p className="text-near-muted text-sm leading-relaxed max-w-lg text-pretty">
-          NEAR captures a growing share of fees as gross revenue, feeding buybacks that permanently remove NEAR from circulation.
+          NEAR captures a growing share of fees, feeding buybacks that permanently remove NEAR from circulation.
         </p>
+
+        <div className="flex items-center gap-2">
+          <span className="text-near-muted text-xs font-medium tracking-widest uppercase">Total fees generated</span>
+          <span className="text-near-text text-xs font-semibold">{totalFeesDisplay}</span>
+        </div>
 
         <div className="hidden">
           <Badge variant={isUp ? "green" : "red"}>
