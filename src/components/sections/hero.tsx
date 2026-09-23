@@ -86,42 +86,42 @@ export function Hero({
           <Gauge value={gaugeValue} />
 
           <p className="text-xs text-near-muted text-center leading-relaxed">
-            Share of total fees captured as protocol revenue.
+            Share of total fees captured as net revenue.
           </p>
 
           <Separator />
 
           <div>
-            <p className="text-xs text-near-subtle mb-3">Fees · last 30 days</p>
+            <p className="text-xs text-near-subtle mb-3">Last 30 days</p>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-[10px] text-near-subtle uppercase tracking-wider mb-1">Gross</p>
+                <p className="text-[10px] text-near-subtle uppercase tracking-wider mb-1">Net revenue</p>
                 <div className="flex items-baseline gap-1.5">
                   <AnimatedNumber
-                    value={feesLast30d}
+                    value={netFeesLast30d}
                     duration={1.5}
                     delay={0.3}
                     className="text-xl font-bold text-near-text"
                   />
                   <span className="text-xs text-near-muted font-medium">NEAR</span>
                 </div>
-                {feesLast30dUsd && (
-                  <p className="text-xs text-near-green/70 mt-0.5">≈ {feesLast30dUsd} USD</p>
+                {netFeesLast30dUsd && (
+                  <p className="text-xs text-near-green/70 mt-0.5">≈ {netFeesLast30dUsd} USD</p>
                 )}
               </div>
               <div>
-                <p className="text-[10px] text-near-subtle uppercase tracking-wider mb-1">Net</p>
+                <p className="text-[10px] text-near-subtle uppercase tracking-wider mb-1">Fees generated</p>
                 <div className="flex items-baseline gap-1.5">
                   <AnimatedNumber
-                    value={netFeesLast30d}
+                    value={feesLast30d}
                     duration={1.5}
                     delay={0.4}
                     className="text-xl font-bold text-near-text"
                   />
                   <span className="text-xs text-near-muted font-medium">NEAR</span>
                 </div>
-                {netFeesLast30dUsd && (
-                  <p className="text-xs text-near-green/70 mt-0.5">≈ {netFeesLast30dUsd} USD</p>
+                {feesLast30dUsd && (
+                  <p className="text-xs text-near-green/70 mt-0.5">≈ {feesLast30dUsd} USD</p>
                 )}
               </div>
             </div>
