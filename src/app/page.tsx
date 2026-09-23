@@ -196,8 +196,8 @@ export default async function Page() {
         </div>
         <TvlChartSection data={tvlChartSeries} currentTvl={tvlCurrentUsd} growthX={tvlGrowthX} />
 
-        {/* Revenue by Stream */}
-        {revenueStreams.length > 0 && (
+        {/* Revenue by Stream (hidden for now — remove the `false &&` to restore) */}
+        {false && revenueStreams.length > 0 && (
           <div className="rounded-2xl border border-near-border bg-near-card overflow-hidden" style={debugGlow("api")}>
             <div className="p-6 pb-4">
               <div className="flex items-center gap-3 mb-2 flex-wrap">
